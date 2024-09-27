@@ -20,10 +20,16 @@ int VerifyDirSizeChanges(char *dirpath) {
     return (rWait == WAIT_OBJECT_0 ? 1 : 0);
 }
 
-unsigned long long ActualDirSize(char *dirpath) {
+LONGLONG ActualDirSize(char *dirpath) {
     // Funcion que retorna el tamaño actual del directorio en dirpath
+    LONGLONG DirSize;
+    LARGE_INTEGER uSize;
 
-    // CreateFile abre directorios para luego usar GeteFileSize
+    if (!GetFileSizeEx(hDir, (PLARGE_INTEGER) &uSize))
+        return 0;
+    
+    DirSize = uSize.QuadPart;
+    return DirSize;
 }
 
 int OpenDir(char *dirpath) {
