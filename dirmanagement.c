@@ -1,6 +1,6 @@
 #include "des.h"
 
-HANDLE hDir;
+static HANDLE hDir;
 
 int VerifyDirSizeChanges(char *dirpath) {
     // Funcion que revisa con las funciones de win32 si el directorio en dirpath cambió de tamaño.
