@@ -3,23 +3,31 @@
 #define MAXLEN 100
 #define TIMELEN 250
 
+// C:\Users\mcalf\Downloads\TESTDIR 0.00505
+
 int main() {
-    char dirpath[MAXLEN], temp[MAXLEN], sTime[MAXLEN], *GetTime(char *, int);
+    char dirpath[MAX_PATH], temp[MAXLEN], sTime[MAXLEN], *GetTime(char *, int);
     long double s;
+    long long ActualSize;
     void GetUserInput(char *, int, char *), TrimStr(char *);
 
+    fprintf(stdout, "Download Energy Saver - 1.0 - m.calfio.c@uc.cl\n\n");
+
     do 
-        GetUserInput(dirpath, MAXLEN, "Ingresa direccion de directorio a revisar:");
+        GetUserInput(dirpath, MAX_PATH, "Ingresa direccion de directorio a revisar: ");
     while (!OpenDir(dirpath));
 
-    GetUserInput(temp, MAXLEN, "Ingresa tamaño esperado en gigabytes, usando '.' como decimal:");
-    s = gb_to_mb(atof(temp)); // Tamaño en bytes
+    GetUserInput(temp, MAXLEN, "\nIngresa espacio utilizado esperado en gigabytes, usando '.' como decimal: ");
+    s = gb_to_b(atof(temp)); // Tamaño en bytes
+
+    fprintf(stdout, "\nComenzando el seguimiento de la descarga:\n\n");
 
     while (TRUE) {
         // Mientras HAYAN cambios cada 5 minutos no hacer nada. Si verifydirsize NO cambia en 5 minutos, verificar el tamaño y si supera al esperado, apagar. Si no, continuar el bucle.
-        if (!VerifyDirSizeChanges(dirpath) && ActualDirSize(dirpath) >= s)
+        VerifyDirSizeChanges(dirpath);
+        if ((ActualSize = ActualDirSize(dirpath)) >= (long long) s)
             printf("DESCARGA LISTA!\n");
-        fprintf(stdout, "%s El archivo aun esta en descarga.\n", GetTime(sTime, MAXLEN));
+        fprintf(stdout, "%s | El archivo aun esta en descarga. (%lldb / %lldb)\n", GetTime(sTime, MAXLEN), ActualSize, (long long) s);
     }
     return 0;
 }
@@ -59,8 +67,8 @@ char *GetTime(char *strTime, int max) {
 
     TimeInfo = localtime(&tActualTime);
     
-    sprintf(temp, "%d/%d/%d %d:%d", TimeInfo->tm_mday, TimeInfo->tm_mon + 1, TimeInfo->tm_year - 100, TimeInfo->tm_hour, TimeInfo->tm_min);
-    if (sizeof(temp) >= max)
+    sprintf(temp, "%02d/%02d/20%d %02d:%02d", TimeInfo->tm_mday, TimeInfo->tm_mon + 1, TimeInfo->tm_year - 100, TimeInfo->tm_hour, TimeInfo->tm_min);
+    if (strlen(temp) >= max) 
         return NULL;
 
     sprintf(strTime, "%s", temp);
