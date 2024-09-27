@@ -6,19 +6,20 @@ int main() {
     char dirpath[MAXLEN];
     char temp[MAXLEN];
     long double s;
-    int downloaded = FALSE;
 
-    GetUserInput(dirpath, MAXLEN, "Ingresa direccion de directorio a revisar:");
+    do 
+        GetUserInput(dirpath, MAXLEN, "Ingresa direccion de directorio a revisar:");
+    while (!OpenDir(dirpath));
+
     GetUserInput(temp, MAXLEN, "Ingresa tamaño esperado en gigabytes, usando '.' como decimal:");
-    s = atof(temp) * 1000000000; // Tamaño en bytes
+    s = gb_to_mb(atof(temp)); // Tamaño en bytes
 
-    while (!downloaded) {
-        if (VerifyDirSize(dirpath) && ActualDirSize(dirpath) >= s) {
-            downloaded = TRUE;
-            printf("LISTO\n");
-        }    
+    while (TRUE) {
+        // Mientras HAYAN cambios cada 5 minutos no hacer nada. Si verifydirsize NO cambia en 5 minutos, verificar el tamaño y si supera al esperado, apagar. Si no, continuar el bucle.
+        if (!VerifyDirSizeChanges(dirpath) && ActualDirSize(dirpath) >= s)
+            printf("DESCARGA LISTA!\n");
     }
-    //system("shutdown /s");
+    return 0;
 }
 
 void GetUserInput(char *buf, int max, char *message) {
