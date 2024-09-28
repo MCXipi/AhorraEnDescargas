@@ -1,12 +1,12 @@
 
-CP = cl /c /nologo
+CP = cl /c /nologo 
 
 DownloadEnergySaver.exe : main.obj dirmanagement.obj
 	LINK /nologo /OUT:DownloadEnergySaver.exe main.obj dirmanagement.obj
 	del *.obj
 
-main.obj : dirmanagement.obj main.c
-	$(CP) main.c
+main.obj : dirmanagement.obj src/main.c
+	$(CP) src/main.c
 
-dirmanagement.obj : dirmanagement.c 
-	$(CP) dirmanagement.c
+dirmanagement.obj : src/dirmanagement.c 
+	$(CP) src/dirmanagement.c
