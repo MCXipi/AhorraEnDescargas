@@ -9,8 +9,8 @@ int main() {
     long long ActualSize;
     void GetUserInput(char *, int, char *), TrimStr(char *);
 
-    system("TITLE Download Energy Saver");
-    fprintf(stdout, "Download Energy Saver - 1.0 - m.calfio.c@uc.cl\n\n");
+    system("TITLE Ahorra En Descargas");
+    fprintf(stdout, "Ahorra En Descargas - v1.0 - github.com/Xipiii\n\n");
 
     do 
         GetUserInput(dirpath, MAX_PATH, "Ingresa direccion del directorio a seguir: ");

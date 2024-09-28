@@ -71,6 +71,7 @@ LONGLONG ActualDirSize(char *dirpath) {
 int OpenDir(char *dirpath) {
     // Funcion que abre directorio ubicado en dirpath.
     // Utilizado para comprobar que la carpeta realmente exista.
+    // Otorga permisos de FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE para permitir la descarga.
     // Retorna 0 si hay un error. Retorna 1 si se abrió sin problemas.
     
     if (CreateFileA((LPCSTR) dirpath, FILE_GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL) == INVALID_HANDLE_VALUE) {
