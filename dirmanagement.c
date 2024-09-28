@@ -19,7 +19,7 @@ int VerifyDirSizeChanges(char *dirpath, int ending) {
             fprintf(stderr, "Error siguiendo cambios.\n");
             exit(1);
         }
-    
+
     while(WaitForSingleObject(hFileChangeNotify, 600000) != (ending ? WAIT_TIMEOUT : WAIT_OBJECT_0))
         ;
     return 0;

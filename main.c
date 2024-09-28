@@ -9,13 +9,14 @@ int main() {
     long long ActualSize;
     void GetUserInput(char *, int, char *), TrimStr(char *);
 
+    system("TITLE Download Energy Saver");
     fprintf(stdout, "Download Energy Saver - 1.0 - m.calfio.c@uc.cl\n\n");
 
     do 
-        GetUserInput(dirpath, MAX_PATH, "Ingresa direccion de directorio a revisar: ");
+        GetUserInput(dirpath, MAX_PATH, "Ingresa direccion del directorio a seguir: ");
     while (!OpenDir(dirpath));
 
-    GetUserInput(temp, MAXLEN, "\nIngresa espacio utilizado esperado en gigabytes, usando '.' como decimal: ");
+    GetUserInput(temp, MAXLEN, "\nIngresa uso de almacenamiento esperado en gigabytes, usando '.' como decimal: ");
     s = gb_to_b(atof(temp)); // Tamaño en bytes
 
     fprintf(stdout, "\nComenzando el seguimiento de la descarga:\n\n");
@@ -23,9 +24,11 @@ int main() {
     while (TRUE) {
         VerifyDirSizeChanges(dirpath, FALSE);
         if ((ActualSize = ActualDirSize(dirpath)) / (long long) s >= 0.98) { // Si el tamaño actual es al menos el 98% de lo esperado, empezar la descarga final
-            fprintf(stdout, "Terminando descarga.\n");
+            fprintf(stdout, "%s | Terminando descarga.\n", GetTime(sTime, MAXLEN));
             VerifyDirSizeChanges(dirpath, TRUE);
-            system("shutdown /s");            
+            fprintf(stdout, "%s | Apagando equipo en 10 segundos.\n", GetTime(sTime, MAXLEN));
+            system("shutdown /s /f /t 10");
+            exit(0);
         }
         fprintf(stdout, "%s | Archivo en descarga. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN), ActualSize, (long long) s);
     }
