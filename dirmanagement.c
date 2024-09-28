@@ -1,34 +1,34 @@
 #include "des.h"
 
-static HANDLE hDir;
-
-int VerifyDirSizeChanges(char *dirpath) {
+int VerifyDirSizeChanges(char *dirpath, int ending) {
     // Funcion que revisa con las funciones de win32 si el directorio en dirpath cambió de tamaño.
     // Crea al llamar por primera vez a la funcion para crear en HANDLE de notificacion, y luego sigue los cambios con FindNextChangeNotification
-    // Espera 5 minutos a que cambie.
-    // Si cambia retorna 1, si no, 0 (Incluyendo cualquier error en espera).
+    // Espera infinitamente hasta que cambie, pero si ending es TRUE, entonces se espera a que el resultado sea WAIT_TIMEOUT,
+    // cuando despues de 10 minutos no han habido más cambios, y posiblemente haya terminado la descarga.
 
     static HANDLE hFileChangeNotify;
 
-    if (hFileChangeNotify == NULL)
+    if (hFileChangeNotify == NULL) { // Problema del else colgante al haber if-else anidados en if o else.
         if ((hFileChangeNotify = FindFirstChangeNotificationA((LPCSTR) dirpath, TRUE, FILE_NOTIFY_CHANGE_SIZE)) == INVALID_HANDLE_VALUE) {
             fprintf(stderr, "Directorio invalido o error al seguir cambios.\n");
             exit(1);
         }
+    }
     else
         if (!FindNextChangeNotification(hFileChangeNotify)) {
             fprintf(stderr, "Error siguiendo cambios.\n");
             exit(1);
         }
-
-    while(WaitForSingleObject(hFileChangeNotify, 5000) != WAIT_OBJECT_0)
+    
+    while(WaitForSingleObject(hFileChangeNotify, 600000) != (ending ? WAIT_TIMEOUT : WAIT_OBJECT_0))
         ;
     return 0;
 }
 
 LONGLONG ActualDirSize(char *dirpath) {
     // Funcion que retorna el tamaño actual del directorio en dirpath
-    // Los directorios por si mismos NO tienen tamaño
+    // Los directorios por si mismos NO tienen tamaño, por lo que se calcula el tamaño total sumando el de cada archivo individual
+    // Se llama recursivamente en el caso de que el archivo sea un directorio
 
     HANDLE hFileSearch;
     WIN32_FIND_DATAA sFileData;
@@ -53,7 +53,7 @@ LONGLONG ActualDirSize(char *dirpath) {
             sSizeStruct.LowPart = sFileData.nFileSizeLow;
             sFileSize += sSizeStruct.QuadPart;
         }
-        else if (strcmp(sFileData.cFileName, ".") != 0 && strcmp(sFileData.cFileName, "..") != 0){
+        else if (strcmp(sFileData.cFileName, ".") != 0 && strcmp(sFileData.cFileName, "..") != 0){ // Ignorar si el archivo encontrado es el directorio actual o padre
             sprintf(sRecursivePath, "%s\\%s", dirpath, sFileData.cFileName);
             sFileSize += ActualDirSize(sRecursivePath);
         }
@@ -69,15 +69,11 @@ LONGLONG ActualDirSize(char *dirpath) {
 }
 
 int OpenDir(char *dirpath) {
-    // Funcion que abre directorio ubicado en dirpath, y lo asigna a un HANDLE para uso en las demás funciones
+    // Funcion que abre directorio ubicado en dirpath.
+    // Utilizado para comprobar que la carpeta realmente exista.
     // Retorna 0 si hay un error. Retorna 1 si se abrió sin problemas.
     
-    SECURITY_ATTRIBUTES sSecAtt;
-    sSecAtt.nLength = sizeof(SECURITY_ATTRIBUTES);
-    sSecAtt.bInheritHandle = TRUE;
-    sSecAtt.lpSecurityDescriptor = NULL;
-
-    if ((hDir = CreateFileA((LPCSTR) dirpath, FILE_GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, (LPSECURITY_ATTRIBUTES) &sSecAtt, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL)) == INVALID_HANDLE_VALUE) {
+    if (CreateFileA((LPCSTR) dirpath, FILE_GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL) == INVALID_HANDLE_VALUE) {
         fprintf(stderr, "Error abriendo directorio. Ingresaste una ruta correcta?\n");
         return 0;
     }

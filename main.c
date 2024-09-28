@@ -3,8 +3,6 @@
 #define MAXLEN 100
 #define TIMELEN 250
 
-// C:\Users\mcalf\Downloads\TESTDIR 0.00505
-
 int main() {
     char dirpath[MAX_PATH], temp[MAXLEN], sTime[MAXLEN], *GetTime(char *, int);
     long double s;
@@ -23,11 +21,13 @@ int main() {
     fprintf(stdout, "\nComenzando el seguimiento de la descarga:\n\n");
 
     while (TRUE) {
-        // Mientras HAYAN cambios cada 5 minutos no hacer nada. Si verifydirsize NO cambia en 5 minutos, verificar el tamaño y si supera al esperado, apagar. Si no, continuar el bucle.
-        VerifyDirSizeChanges(dirpath);
-        if ((ActualSize = ActualDirSize(dirpath)) >= (long long) s)
-            printf("DESCARGA LISTA!\n");
-        fprintf(stdout, "%s | El archivo aun esta en descarga. (%lldb / %lldb)\n", GetTime(sTime, MAXLEN), ActualSize, (long long) s);
+        VerifyDirSizeChanges(dirpath, FALSE);
+        if ((ActualSize = ActualDirSize(dirpath)) / (long long) s >= 0.98) { // Si el tamaño actual es al menos el 98% de lo esperado, empezar la descarga final
+            fprintf(stdout, "Terminando descarga.\n");
+            VerifyDirSizeChanges(dirpath, TRUE);
+            system("shutdown /s");            
+        }
+        fprintf(stdout, "%s | Archivo en descarga. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN), ActualSize, (long long) s);
     }
     return 0;
 }

@@ -10,6 +10,6 @@
 #define gb_to_b(g) \
     g * 1000000000
 
-int VerifyDirSizeChanges(char *);
+int VerifyDirSizeChanges(char *, int);
 int OpenDir(char *);
 LONGLONG ActualDirSize(char *);
