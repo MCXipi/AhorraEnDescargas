@@ -1,8 +1,8 @@
 
 CP = cl /c /nologo 
 
-DownloadEnergySaver.exe : main.obj dirmanagement.obj
-	LINK /nologo /OUT:DownloadEnergySaver.exe main.obj dirmanagement.obj
+AhorraEnDescargas.exe : main.obj dirmanagement.obj
+	LINK /nologo /OUT:AhorraEnDescargas.exe main.obj dirmanagement.obj
 	del *.obj
 
 main.obj : dirmanagement.obj src/main.c
