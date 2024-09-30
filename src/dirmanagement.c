@@ -9,7 +9,7 @@ int VerifyDirSizeChanges(char *dirpath, int ending) {
     static HANDLE hFileChangeNotify;
 
     if (hFileChangeNotify == NULL) { // Problema del else colgante al haber if-else anidados en if o else.
-        if ((hFileChangeNotify = FindFirstChangeNotificationA((LPCSTR) dirpath, TRUE, FILE_NOTIFY_CHANGE_SIZE)) == INVALID_HANDLE_VALUE) {
+        if ((hFileChangeNotify = FindFirstChangeNotificationA((LPCSTR) dirpath, TRUE, FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_FILE_NAME)) == INVALID_HANDLE_VALUE) {
             fprintf(stderr, "Directorio invalido o error al seguir cambios.\n");
             exit(1);
         }

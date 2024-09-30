@@ -9,8 +9,8 @@ int main() {
     long long ActualSize;
     void GetUserInput(char *, int, char *), TrimStr(char *);
 
-    system("TITLE Ahorra En Descargas");
-    fprintf(stdout, "Ahorra En Descargas - v1.0 - github.com/Xipiii\n\n");
+    system("TITLE Shutdown After Downloads");
+    fprintf(stdout, "Shutdown After Downloads - v1.0 - github.com/MCXipi\n\n");
 
     do 
         GetUserInput(dirpath, MAX_PATH, "Ingresa direccion del directorio a seguir: ");
@@ -24,7 +24,7 @@ int main() {
     while (TRUE) {
         VerifyDirSizeChanges(dirpath, FALSE);
         if ((ActualSize = ActualDirSize(dirpath)) / (long long) s >= 0.98) { // Si el tamaño actual es al menos el 98% de lo esperado, empezar la descarga final
-            fprintf(stdout, "%s | Terminando descarga.\n", GetTime(sTime, MAXLEN));
+            fprintf(stdout, "%s | Terminando descarga. Pulsa CTRL + C para salir y evitar apagado.\n", GetTime(sTime, MAXLEN));
             VerifyDirSizeChanges(dirpath, TRUE);
             fprintf(stdout, "%s | Apagando equipo en 10 segundos.\n", GetTime(sTime, MAXLEN));
             system("shutdown /s /f /t 10");

@@ -1,9 +1,9 @@
 
-# Ahorra En Descargas 1.0 (Windows)
+# Shutdown After Downloads 1.1 (Windows)
 Programa el apagado al terminar descargas.
 
 ## ¿Qué es?
-Ahorra En Descargas es un programa que detecta el progreso en descargas de gran tamaño. Una vez que la carpeta a seguir logra un tamaño superior o igual al 98% esperado, espera a que dejen de descargarse datos por 10 minutos y apaga el sistema.
+Shutdown After Downloads es un programa que detecta el progreso en descargas de gran tamaño. Una vez que la carpeta a seguir logra un tamaño superior o igual al 98% estimado, espera a que dejen de descargarse datos por 10 minutos y apaga el sistema.
 
 ## ¿Cómo funciona?
 1.  Ingresa una ruta de la carpeta a seguir, como por ejemplo `C:\Users\usuario\Downloads\TESTDIR`. **No debe terminar en \'\\\'**.
