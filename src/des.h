@@ -7,6 +7,10 @@
     #include <string.h>
 #endif
 
+#ifndef MAX_PATH
+    #define MAX_PATH 260
+#endif
+
 #define gb_to_b(g) \
     g * 1000000000
 
