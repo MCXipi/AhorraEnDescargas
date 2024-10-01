@@ -68,6 +68,15 @@ LONGLONG ActualDirSize(char *dirpath) {
     }
 }
 
+int CreateLogDir() {
+    // Funcion que crea una carpeta en el directorio del ejecutable para guardar los logs.
+    // Retorna 1 si pudo crearla satisfactoriamente o si ya existe, y 0 si hubo un error.
+    
+    if (!CreateDirectoryA(".\\SADLogs", NULL))
+        return GetLastError() == ERROR_ALREADY_EXISTS ? 1 : 0;
+    return 1;
+}
+
 int OpenDir(char *dirpath) {
     // Funcion que abre directorio ubicado en dirpath.
     // Utilizado para comprobar que la carpeta realmente exista.
