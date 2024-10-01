@@ -71,9 +71,18 @@ LONGLONG ActualDirSize(char *dirpath) {
 int CreateLogDir() {
     // Funcion que crea una carpeta en el directorio del ejecutable para guardar los logs.
     // Retorna 1 si pudo crearla satisfactoriamente o si ya existe, y 0 si hubo un error.
-    
+
     if (!CreateDirectoryA(".\\SADLogs", NULL))
         return GetLastError() == ERROR_ALREADY_EXISTS ? 1 : 0;
+    return 1;
+}
+
+int GetActualDir(char *psWriteTo, int nMax) {
+    // Funcion que escribe la carpeta actual donde se ejecuta el programa en sWriteTo, teniendo como limite nMax.
+    // Retorna 0 si hay un error, o algún numero si se logra.
+
+    if(GetCurrentDirectoryA((DWORD) nMax, (LPSTR) psWriteTo) == 0)
+        return 0;
     return 1;
 }
 

@@ -14,3 +14,4 @@ int VerifyDirSizeChanges(char *, int);
 int OpenDir(char *);
 LONGLONG ActualDirSize(char *);
 int CreateLogDir(void);
+int GetActualDir(char *, int);
