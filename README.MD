@@ -1,5 +1,5 @@
 
-# Shutdown After Downloads 1.1 (Windows)
+# Shutdown After Downloads 1.11 (Windows)
 Apaga tu PC cuando tu descarga finalizó.
 
 Shutdown your PC when your download has finished.
@@ -17,6 +17,10 @@ Shutdown After Downloads is a program that detects the progress in big sized dow
 2.  Ingresa el tamaño esperado que tendrá la carpeta a seguir, una vez que termine la descarga. Este debe estar en gigabytes y el decimal debe ser un '.'
     
     Write the estimated size of the monitorized directory, after the download finishes. This must be in gigabytes and the decimal pointer must be a '.'.
+
+3.  Ingresa si deseas crear un log de la descarga. Se te indicará la ruta del archivo.
+
+    Write if you want to create a log file for the download. The file route will be indicated.
 
 _Como la informacion de tamaño que ofrecen algunas plataformas son una aproximación, se comenzará el proceso de fin de descarga una vez que se supere el 98% del tamaño estimado._ 
 
