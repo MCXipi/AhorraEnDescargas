@@ -20,7 +20,7 @@ int VerifyDirSizeChanges(char *dirpath, int ending) {
             exit(1);
         }
 
-    while(WaitForSingleObject(hFileChangeNotify, 600000) != (ending ? WAIT_TIMEOUT : WAIT_OBJECT_0))
+    while(WaitForSingleObject(hFileChangeNotify, 300000) != (ending ? WAIT_TIMEOUT : WAIT_OBJECT_0))
         ;
     return 0;
 }
