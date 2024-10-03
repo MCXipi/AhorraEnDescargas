@@ -5,14 +5,14 @@
 
 int main() {
     char dirpath[MAX_PATH], actualdirpath[MAX_PATH], temp[MAXLEN], sTime[MAXLEN], *GetTime(char *, int, int);
-    long double s;
-    long long ActualSize;
+    long double EstimatedSize;
+    long long InitialSize, DownloadedSize;
     void GetUserInput(char *, int, char *), TrimStr(char *);
     int bCreateLog, nLogOption;
     FILE *fLog;
 
     system("TITLE Shutdown After Downloads");
-    fprintf(stdout, "Shutdown After Downloads - v1.11 - github.com/MCXipi\n\n");
+    fprintf(stdout, "Shutdown After Downloads - v1.12 - github.com/MCXipi\n\n");
 
     do 
         GetUserInput(dirpath, MAX_PATH, "Ingresa direccion del directorio a seguir: ");
@@ -20,8 +20,8 @@ int main() {
 
     do {
         GetUserInput(temp, MAXLEN, "\nIngresa uso de almacenamiento esperado en gigabytes, usando '.' como decimal: ");
-        s = gb_to_b(atof(temp)); // Tamaño en bytes
-    } while (s == 0.0);
+        EstimatedSize = gb_to_b(atof(temp)); // Tamaño en bytes
+    } while (EstimatedSize == 0.0);
 
     do {
         GetUserInput(temp, MAXLEN, "\nCrear log de la descarga?\n1.Si\n2.No\n\n");
@@ -44,16 +44,20 @@ int main() {
         fprintf(stdout, "\nLog creado en %s\n", temp);
     }
 
+    InitialSize = ActualDirSize(dirpath); // Obtener tamaño inicial en el caso de que la descarga sea una actualizacion
+
     fprintf(stdout, "\nComenzando el seguimiento de la descarga:\n\n");
 
     while (TRUE) {
         VerifyDirSizeChanges(dirpath, FALSE);
 
-        if ((ActualSize = ActualDirSize(dirpath)) / (long long) s >= 0.98) { // Si el tamaño actual es al menos el 98% de lo esperado, empezar la descarga final
-            fprintf(stdout, "%s | Terminando descarga. Pulsa CTRL + C para salir y evitar apagado. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN, FALSE), ActualSize, (long long) s);
-            if (bCreateLog) 
-                fprintf(fLog, "%s | Terminando descarga. Pulsa CTRL + C para salir y evitar apagado. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN, FALSE), ActualSize, (long long) s);
-            fclose(fLog);
+        DownloadedSize = ActualDirSize(dirpath) - InitialSize;
+        if (DownloadedSize / (long long) EstimatedSize >= 0.98) { // Si el tamaño actual es al menos el 98% de lo esperado, empezar la descarga final
+            fprintf(stdout, "%s | Terminando descarga. Pulsa CTRL + C para salir y evitar apagado. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN, FALSE), DownloadedSize, (long long) EstimatedSize);
+            if (bCreateLog) {
+                fprintf(fLog, "%s | Terminando descarga. Pulsa CTRL + C para salir y evitar apagado. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN, FALSE), DownloadedSize, (long long) EstimatedSize);
+                fclose(fLog);
+            }
 
             VerifyDirSizeChanges(dirpath, TRUE);
             fprintf(stdout, "%s | Apagando equipo en 10 segundos.\n", GetTime(sTime, MAXLEN, FALSE));
@@ -61,9 +65,9 @@ int main() {
             exit(0);
         }
 
-        fprintf(stdout, "%s | Archivo en descarga. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN, FALSE), ActualSize, (long long) s);
+        fprintf(stdout, "%s | Archivo en descarga. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN, FALSE), DownloadedSize, (long long) EstimatedSize);
         if (bCreateLog) 
-            fprintf(fLog, "%s | Archivo en descarga. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN, FALSE), ActualSize, (long long) s);
+            fprintf(fLog, "%s | Archivo en descarga. (%lld bytes / %lld bytes)\n", GetTime(sTime, MAXLEN, FALSE), DownloadedSize, (long long) EstimatedSize);
     }
     return 0;
 }
